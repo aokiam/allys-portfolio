@@ -6,12 +6,13 @@ const Button = ({
     onClick,
     className = "",
     color = "yellow",
-    size = "medium", // small, medium, large, custom
-    customSize = null, // { width: "128px", height: "128px" }
-    image = null, // URL string or JSX element
-    imageSize = "medium", // small, medium, large, custom
-    customImageSize = null, // { width: "48px", height: "48px" }
-    children // For text or other content
+    size = "medium", 
+    customSize = null,
+    image = null, 
+    imageSize = "medium", 
+    customImageSize = null,
+    children,
+    shape = 'circular'
 }) => {
     const colorClasses = {
         yellow: {
@@ -30,51 +31,42 @@ const Button = ({
             bg: 'bg-pink-50',
             shadowColor: '#F78FB3'
         },
-        blue: {
-            bg: 'bg-blue-50',
-            shadowColor: '#3B82F6'
-        },
-        green: {
-            bg: 'bg-green-50',
-            shadowColor: '#10B981'
-        },
-        purple: {
-            bg: 'bg-purple-50',
-            shadowColor: '#8B5CF6'
-        },
         orange: {
             bg: 'bg-orange-50',
-            shadowColor: '#F97316'
-        },
-        red: {
-            bg: 'bg-red-50',
-            shadowColor: '#EF4444'
-        },
-        gray: {
-            bg: 'bg-gray-50',
-            shadowColor: '#6B7280'
+            shadowColor: '#D97040'
         }
     };
 
     const sizeClasses = {
-        small: 'w-20 h-20',
+        small: 'w-28 h-28',
         medium: 'w-32 h-32',
         large: 'w-48 h-48',
-        xlarge: 'w-64 h-64'
+        xlarge: 'w-64 h-64',
+        'rect-small': 'w-62 h-10 px-4',
+        'rect-medium': 'w-48 h-16 px-6',
+        'rect-large': 'w-64 h-20 px-8',
+        'rect-xlarge': 'w-80 h-24 px-10',
+
     };
 
     const imageSizeClasses = {
-        small: 'w-6 h-6',
-        medium: 'w-12 h-12',
-        large: 'w-16 h-16',
-        xlarge: 'w-24 h-24'
+        small: 'w-16 h-16',
+        medium: 'w-24 h-24',
+        large: 'w-32 h-32',
+        xlarge: 'w-40 h-40'
     };
 
     const shadowSizes = {
         small: { normal: 8, hover: 4, tap: 2 },
         medium: { normal: 12, hover: 6, tap: 4 },
         large: { normal: 16, hover: 8, tap: 6 },
-        xlarge: { normal: 20, hover: 10, tap: 8 }
+        xlarge: { normal: 20, hover: 10, tap: 8 },
+
+        'rect-small': { normal: 6, hover: 3, tap: 2 },
+        'rect-medium': { normal: 8, hover: 4, tap: 3 },
+        'rect-large': { normal: 10, hover: 5, tap: 4 },
+        'rect-xlarge': { normal: 12, hover: 6, tap: 5 },
+
     };
 
     const colors = colorClasses[color] || colorClasses.yellow;
@@ -83,6 +75,8 @@ const Button = ({
     const shadowSize = shadowSizes[size] || shadowSizes.medium;
 
     const isExternalUrl = navigateTo && (navigateTo.startsWith('http://') || navigateTo.startsWith('https://'));
+
+    const isRectangular = size.startsWith('rect-') || shape === 'rectangular';
 
     const handleClick = () => {
         if (isExternalUrl) {
@@ -136,7 +130,7 @@ const Button = ({
 
     return (
         <motion.button 
-            className={`relative ${size === 'custom' ? '' : sizeClass} rounded-full ${colors.bg} cursor-pointer flex items-center justify-center ${className}`}
+            className={`relative ${size === 'custom' ? '' : sizeClass} ${isRectangular ? 'rounded-none' : 'rounded-full'} ${colors.bg} cursor-pointer flex items-center justify-center ${className}`}
             style={{
                 boxShadow: normalShadow,
                 ...customSizeStyle
@@ -159,10 +153,10 @@ const Button = ({
             }}
             onClick={handleClick}
         >
-            <div className="flex flex-col items-center justify-center gap-2">
+            <div className={`flex items-center justify-center ${isRectangular ? 'flex-row gap-3' : 'flex-col gap-2'}`}>
                 {renderImage()}
                 {children && (
-                    <span className="text-gray-700 font-medium text-center">
+                    <span className="text-orange-100 font-jersey text-3xl text-center">
                         {children}
                     </span>
                 )}
