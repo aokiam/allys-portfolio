@@ -7,7 +7,7 @@ const OverviewPage = () => {
   const [currentPage, setCurrentPage] = useState('home');
   const [currentProjectIndex, setCurrentProjectIndex] = useState(0);
   const [avatarMode, setAvatarMode] = useState('default'); // 'default', 'coder', 'editor'
-  const [skillsMode, setSkillsMode] = useState('cs'); // 'cs', 've'
+  const [skillsMode, setSkillsMode] = useState('coding'); 
 
   const projects = [
     { title: 'KJ Station', image: '/assets/kjstation.jpg' },
@@ -20,8 +20,6 @@ const OverviewPage = () => {
 
   const skillsData = {
     coding: {
-      'Computer Science': 85,
-      'Video Editing': 75,
       'Programming Languages': 90,
       'Database Management': 70,
       'Data Structures': 85,
@@ -79,6 +77,19 @@ const OverviewPage = () => {
   const prevProject = () => {
     setCurrentProjectIndex((prev) => (prev - 1 + projects.length) % projects.length);
   };
+
+  const SkillBar = ({ skill, level }) => (
+    <div className='mb-3'>
+      <div className='text-purple-50 font-jersey text-lg mb-1'>{skill}</div>
+      <div className='w-full bg-purple-100 rounded-full h-2'>
+        <motion.div
+          className='bg-purple-50 h-2 rounded-full'
+          initial={{ width: 0 }}
+          animate={{ width: `${level}%` }}
+          transition={{ duration: 0.8, delay: 0.2 }} />
+      </div>
+    </div>
+  );
 
   return (
     <motion.div className='min-h-screen bg-purple-50 p-4 sm:p-6 md:p-8 lg:p-12'>
@@ -166,8 +177,10 @@ const OverviewPage = () => {
             </div>
           </div>
 
-          { /* SOCIAL BUTTONS */}
+          { /* MIDDLE SECTION */}
           <div className='lg:col-span-6 flex flex-col gap-6 sm:gap-8 md:gap-10 ml-8 mr-8'>
+
+            { /* SOCIAL BUTTONS*/ }
             <div className='flex-1 bg-purple-300 shadow-2.5xl'>
               <div className='h-full w-full bg-purple-300 flex gap-12 p-5 justify-center items-center'>
                 <Button 
@@ -195,20 +208,61 @@ const OverviewPage = () => {
             </div>
 
           
-
           {/* PORTFOLIO PREVIEW */}
             <div className='flex-[2] bg-purple-300 shadow-2.5xl'>
               <div className='h-full w-full bg-purple-300'>
-
+                <button onClick={prevProject}
+                        className=''>
+                  <ChevronLeft className='w-6 h-6 text-purple-50'/>
+                </button>
               </div>
             </div>
           </div>
+
 
           { /* SKILLS */}
           <div className='lg:col-span-3 bg-purple-300 shadow-2.5xl'>
             <div className='h-64 sm:h-80 md:h-96 lg:h-full w-full bg-purple-300'>
               <div className='bg-purple-100 text-purple-10 p-2'>
                 <h1 className='text-4xl sm:text-4xl font-jersey text-purple-10 ml-4'>Skills</h1>
+
+                { /* skills mode toggle */}
+                <div className='flex bg-purple-100 rounded-full p-1 mr-4'>
+                  <button onClick={() => setSkillsMode('coding')}
+                          className={`px-3 py-1 rounded-full text-md font-jersey transition-colors
+                                      ${skillsMode === 'coding' ? 'bg-purple-50 text-purple-300' : 'text-purple-100 hover:text-purple-300'}`}>
+                                        Computer Science
+                  </button>
+                  <button onClick={() => setSkillsMode('editing')}
+                          className={`px-3 py-1 rounded-full text-md font-jersey transition-colors
+                                      ${skillsMode === 'editing' ? 'bg-purple-50 text-purple-300' : 'text-purple-100 hover:text-purple-300'}`}>
+                                        Video Editing
+                  </button>
+                </div>
+              </div>
+
+              {/*skills content */}
+              <div className='p-4 h-full overflow-y-auto'>
+                <AnimatePresence mode='wait'>
+                  <motion.div
+                    key={skillsMode}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    {Object.entries(skillsData[skillsMode]).map(([skill, level]) => (
+                      <SkillBar key={skill} skill={skill} level={level} />
+                    ))}
+                  </motion.div>
+                </AnimatePresence>
+
+                <Button
+                  color='orange'
+                  size='rect-small'
+                  className='mt-6 w-full'>
+                    about me
+                  </Button>
               </div>
             </div>
           </div>
